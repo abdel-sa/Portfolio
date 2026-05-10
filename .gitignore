@@ -36,6 +36,11 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local dev / private files
+.claude/
+.cv-work/
+Lebenslauf_Abdelrahman_Salama*
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
