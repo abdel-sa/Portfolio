@@ -30,9 +30,22 @@ export default function RadialOrbitalTimeline({
   const [pulseEffect, setPulseEffect] = useState<Record<number, boolean>>({});
   const [centerOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [activeNodeId, setActiveNodeId] = useState<number | null>(null);
+  const [radius, setRadius] = useState(210);
   const containerRef = useRef<HTMLDivElement>(null);
   const orbitRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<Record<number, HTMLDivElement | null>>({});
+
+  useEffect(() => {
+    const update = () => {
+      if (!containerRef.current) return;
+      const w = containerRef.current.offsetWidth;
+      setRadius(Math.min(210, Math.floor(w / 2) - 52));
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    if (containerRef.current) ro.observe(containerRef.current);
+    return () => ro.disconnect();
+  }, []);
 
   const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === containerRef.current || e.target === orbitRef.current) {
@@ -82,7 +95,6 @@ export default function RadialOrbitalTimeline({
 
   const calculateNodePosition = (index: number, total: number) => {
     const angle = ((index / total) * 360 + rotationAngle) % 360;
-    const radius = 210;
     const radian = (angle * Math.PI) / 180;
     const x = Number((radius * Math.cos(radian) + centerOffset.x).toFixed(2));
     const y = Number((radius * Math.sin(radian) + centerOffset.y).toFixed(2));
@@ -101,7 +113,7 @@ export default function RadialOrbitalTimeline({
 
   return (
     <div
-      className="w-full h-[580px] flex items-center justify-center bg-transparent overflow-hidden relative"
+      className="w-full h-[420px] sm:h-[580px] flex items-center justify-center bg-transparent overflow-hidden relative"
       ref={containerRef}
       onClick={handleContainerClick}
     >
@@ -119,7 +131,10 @@ export default function RadialOrbitalTimeline({
           </div>
 
           {/* Orbit ring */}
-          <div className="absolute w-[420px] h-[420px] rounded-full border border-white/[0.07]" />
+          <div
+            className="absolute rounded-full border border-white/[0.07]"
+            style={{ width: radius * 2, height: radius * 2 }}
+          />
 
           {timelineData.map((item, index) => {
             const position = calculateNodePosition(index, timelineData.length);
