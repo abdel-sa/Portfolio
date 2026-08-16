@@ -94,6 +94,7 @@ function NavHeader() {
     { label: t.nav.about, id: "about" },
     { label: t.nav.skills, id: "skills" },
     { label: t.nav.projects, id: "projekte" },
+    { label: t.nav.certificates, id: "zertifikate" },
     { label: t.nav.contact, id: "kontakt" },
   ];
 

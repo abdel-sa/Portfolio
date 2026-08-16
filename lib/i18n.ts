@@ -7,6 +7,7 @@ export const translations = {
       about: "Über mich",
       skills: "Skills",
       projects: "Projekte",
+      certificates: "Zertifikate",
       contact: "Kontakt",
     },
     hero: {
@@ -78,6 +79,21 @@ export const translations = {
       screenshots: "Screenshots",
       nextProject: "Nächstes Projekt",
     },
+    certificates: {
+      sectionTitle: "Zertifikate",
+      heading: "Zertifizierungen",
+      subtitle: "Abgeschlossene Kurse und Zertifizierungen.",
+      viewCertificate: "Zertifikat ansehen",
+    },
+    certificateDetail: {
+      back: "Zurück",
+      issuedBy: "Ausgestellt von",
+      date: "Datum",
+      credentialId: "Zertifikats-ID",
+      skillsGained: "Erlernte Kompetenzen",
+      viewPdf: "Zertifikat als PDF ansehen",
+      nextCertificate: "Nächstes Zertifikat",
+    },
     contact: {
       sectionTitle: "Kontakt",
       heading: "Lass uns zusammenarbeiten",
@@ -112,6 +128,7 @@ export const translations = {
       about: "About",
       skills: "Skills",
       projects: "Projects",
+      certificates: "Certificates",
       contact: "Contact",
     },
     hero: {
@@ -182,6 +199,21 @@ export const translations = {
       keyFeatures: "Key Features",
       screenshots: "Screenshots",
       nextProject: "Next Project",
+    },
+    certificates: {
+      sectionTitle: "Certificates",
+      heading: "Certifications",
+      subtitle: "Completed courses and certifications.",
+      viewCertificate: "View Certificate",
+    },
+    certificateDetail: {
+      back: "Back",
+      issuedBy: "Issued by",
+      date: "Date",
+      credentialId: "Credential ID",
+      skillsGained: "Skills Gained",
+      viewPdf: "View certificate as PDF",
+      nextCertificate: "Next Certificate",
     },
     contact: {
       sectionTitle: "Contact",
