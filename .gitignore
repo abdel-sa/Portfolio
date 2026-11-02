@@ -39,7 +39,8 @@ yarn-error.log*
 # local dev / private files
 .claude/
 .cv-work/
-Lebenslauf_Abdelrahman_Salama*
+/Lebenslauf*
+/scratch/
 
 # typescript
 *.tsbuildinfo

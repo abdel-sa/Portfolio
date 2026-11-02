@@ -1,4 +1,5 @@
-import type { ShaderConfig } from "@/lib/projects";
+import type { ShaderConfig } from "@/lib/shader";
+import type { Language } from "@/lib/i18n";
 
 export interface Certificate {
   slug: string;
@@ -103,7 +104,7 @@ export const CERTIFICATES_EN_TRANSLATIONS: Record<string, Partial<Certificate>> 
   },
 };
 
-export function getCertificates(lang: string = "de"): Certificate[] {
+export function getCertificates(lang: Language = "de"): Certificate[] {
   if (lang === "de") return CERTIFICATES;
   return CERTIFICATES.map((c) => ({
     ...c,
@@ -111,11 +112,11 @@ export function getCertificates(lang: string = "de"): Certificate[] {
   }));
 }
 
-export function getCertificate(slug: string, lang: string = "de"): Certificate | undefined {
+export function getCertificate(slug: string, lang: Language = "de"): Certificate | undefined {
   return getCertificates(lang).find((c) => c.slug === slug);
 }
 
-export function getAdjacentCertificate(slug: string, lang: string = "de"): Certificate | undefined {
+export function getAdjacentCertificate(slug: string, lang: Language = "de"): Certificate | undefined {
   const certificates = getCertificates(lang);
   const idx = certificates.findIndex((c) => c.slug === slug);
   if (idx === -1) return undefined;

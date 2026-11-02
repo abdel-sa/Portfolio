@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { Download } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { CvDownload } from "@/components/CvDownload";
+import { useLanguage } from "@/components/LanguageProvider";
 
 function ElegantShape({
   className,
@@ -58,53 +60,42 @@ function ElegantShape({
   );
 }
 
-
-
 function useTypingEffect(
   words: string[],
   typingSpeed = 75,
   deletingSpeed = 35,
   pauseDuration = 2200,
 ) {
-  const [displayed, setDisplayed] = useState("");
-  const [wordIndex, setWordIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [state, setState] = useState({ text: "", wordIndex: 0, deleting: false });
 
   useEffect(() => {
-    const current = words[wordIndex % words.length];
-    let timeout: ReturnType<typeof setTimeout>;
+    const current = words[state.wordIndex % words.length];
+    let delay: number;
+    let next: typeof state;
 
-    if (!isDeleting && displayed === current) {
-      timeout = setTimeout(() => setIsDeleting(true), pauseDuration);
-    } else if (isDeleting && displayed === "") {
-      setIsDeleting(false);
-      setWordIndex((i) => (i + 1) % words.length);
+    if (!state.deleting && state.text === current) {
+      delay = pauseDuration;
+      next = { ...state, deleting: true };
+    } else if (state.deleting && state.text === "") {
+      delay = typingSpeed;
+      next = { text: "", wordIndex: (state.wordIndex + 1) % words.length, deleting: false };
     } else {
-      const delta = isDeleting ? deletingSpeed : typingSpeed;
-      timeout = setTimeout(() => {
-        setDisplayed(
-          isDeleting
-            ? current.slice(0, displayed.length - 1)
-            : current.slice(0, displayed.length + 1),
-        );
-      }, delta);
+      delay = state.deleting ? deletingSpeed : typingSpeed;
+      next = {
+        ...state,
+        text: state.deleting
+          ? current.slice(0, state.text.length - 1)
+          : current.slice(0, state.text.length + 1),
+      };
     }
 
+    const timeout = setTimeout(() => setState(next), delay);
     return () => clearTimeout(timeout);
-  }, [
-    displayed,
-    isDeleting,
-    wordIndex,
-    words,
-    typingSpeed,
-    deletingSpeed,
-    pauseDuration,
-  ]);
+  }, [state, words, typingSpeed, deletingSpeed, pauseDuration]);
 
-  return displayed;
+  return state.text;
 }
 
-import { useLanguage } from "@/components/LanguageProvider";
 
 function HeroGeometric({
   title1 = "Abdelrahman",
@@ -263,14 +254,14 @@ function HeroGeometric({
             >
               {t.hero.contact}
             </button>
-            <a
-              href="/cv.pdf"
-              download
-              className="inline-flex items-center gap-2 px-7 py-3 rounded-full border border-white/[0.15] text-white/70 font-medium text-sm hover:border-indigo-400/40 hover:text-white transition-all duration-200 bg-white/[0.03]"
+            <CvDownload
+              side="top"
+              align="center"
+              triggerClassName="inline-flex items-center gap-2 px-7 py-3 rounded-full border border-white/[0.15] text-white/70 font-medium text-sm hover:border-indigo-400/40 hover:text-white transition-all duration-200 bg-white/[0.03]"
             >
               <Download className="w-4 h-4" />
               {t.hero.downloadCV}
-            </a>
+            </CvDownload>
           </motion.div>
         </div>
       </div>

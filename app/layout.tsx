@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "@/components/LanguageProvider";
+import NavHeader from "@/components/nav-header";
+import { translations } from "@/lib/i18n";
+import { getLanguage } from "@/lib/i18n-server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,25 +16,29 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-import { LanguageProvider } from "@/components/LanguageProvider";
+export async function generateMetadata(): Promise<Metadata> {
+  const { meta } = translations[await getLanguage()];
+  return {
+    title: meta.title,
+    description: meta.description,
+  };
+}
 
-export const metadata: Metadata = {
-  title: "Abdelrahman Salama – Software Developer",
-  description: "Portfolio von Abdelrahman Salama – Informatik-Student, Salesforce Administrator & Freelance Web Developer.",
-};
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const language = await getLanguage();
+
   return (
     <html
-      lang="de"
+      lang={language}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col bg-[#030303]">
-        <LanguageProvider>
+        <LanguageProvider initialLanguage={language}>
+          <NavHeader />
           {children}
         </LanguageProvider>
       </body>

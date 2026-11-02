@@ -28,6 +28,7 @@ export default function RadialOrbitalTimeline({
   const [activeNodeId, setActiveNodeId] = useState<number | null>(null);
   const [autoRotate, setAutoRotate] = useState(true);
   const [radius, setRadius] = useState(210);
+  const [angle, setAngle] = useState(0);
 
   // Refs that RAF reads directly — no React state updates per frame
   const angleRef = useRef(0);
@@ -86,10 +87,11 @@ export default function RadialOrbitalTimeline({
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, [autoRotate, timelineData]);
 
-  // Compute position from current angle (used for static render when paused)
+  // Position aus dem gespeicherten Winkel (statischer Render, wenn pausiert).
+  // Während der Rotation setzt der RAF-Loop die Styles direkt.
   const getPos = (index: number) => {
-    const angle = ((index / timelineData.length) * 360 + angleRef.current) % 360;
-    const rad = (angle * Math.PI) / 180;
+    const deg = ((index / timelineData.length) * 360 + angle) % 360;
+    const rad = (deg * Math.PI) / 180;
     return {
       x: radius * Math.cos(rad),
       y: radius * Math.sin(rad),
@@ -98,40 +100,36 @@ export default function RadialOrbitalTimeline({
     };
   };
 
-  const centerViewOnNode = (nodeId: number) => {
-    const i = timelineData.findIndex((item) => item.id === nodeId);
-    const target = (i / timelineData.length) * 360;
-    angleRef.current = (270 - target + 360) % 360;
+  const resetSelection = () => {
+    setExpandedItems({});
+    setActiveNodeId(null);
+    setPulseEffect({});
+    setAutoRotate(true);
   };
 
   const toggleItem = (id: number) => {
-    setExpandedItems((prev) => {
-      const next: Record<number, boolean> = {};
-      Object.keys(prev).forEach((k) => { next[parseInt(k)] = false; });
-      next[id] = !prev[id];
+    if (expandedItems[id]) {
+      resetSelection();
+      return;
+    }
 
-      if (!prev[id]) {
-        setActiveNodeId(id);
-        setAutoRotate(false);
-        centerViewOnNode(id);
-        const pulse: Record<number, boolean> = {};
-        timelineData.find((item) => item.id === id)?.relatedIds.forEach((r) => { pulse[r] = true; });
-        setPulseEffect(pulse);
-      } else {
-        setActiveNodeId(null);
-        setAutoRotate(true);
-        setPulseEffect({});
-      }
-      return next;
-    });
+    // Ausgewählten Knoten nach oben drehen
+    const i = timelineData.findIndex((item) => item.id === id);
+    const target = (270 - (i / timelineData.length) * 360 + 360) % 360;
+    angleRef.current = target;
+    setAngle(target);
+
+    setExpandedItems({ [id]: true });
+    setActiveNodeId(id);
+    setAutoRotate(false);
+    const pulse: Record<number, boolean> = {};
+    timelineData.find((item) => item.id === id)?.relatedIds.forEach((r) => { pulse[r] = true; });
+    setPulseEffect(pulse);
   };
 
   const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === containerRef.current || e.target === orbitRef.current) {
-      setExpandedItems({});
-      setActiveNodeId(null);
-      setPulseEffect({});
-      setAutoRotate(true);
+      resetSelection();
     }
   };
 

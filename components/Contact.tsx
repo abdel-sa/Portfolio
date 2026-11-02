@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
 import { Mail, MapPin, Send, Briefcase, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
+import { CONTACT_LIMITS } from "@/lib/contact";
+import { SITE } from "@/lib/site";
 
 const fadeLeft = {
     hidden: { opacity: 0, x: -30 },
@@ -15,12 +17,19 @@ const fadeRight = {
     visible: { opacity: 1, x: 0, transition: { duration: 0.6, delay: 0.15, ease: [0.25, 0.4, 0.25, 1] as const } },
 };
 
-type Status = "idle" | "sending" | "success" | "error";
+type Status = "idle" | "sending" | "success" | "error" | "rateLimited";
 
 export default function Contact() {
     const { t } = useLanguage();
     const [form, setForm] = useState({ name: "", email: "", message: "" });
     const [status, setStatus] = useState<Status>("idle");
+    // Honeypot: für Menschen unsichtbar, Bots füllen es meist aus
+    const [website, setWebsite] = useState("");
+    const startedAt = useRef<number>(0);
+
+    useEffect(() => {
+        startedAt.current = Date.now();
+    }, []);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -29,8 +38,12 @@ export default function Contact() {
             const res = await fetch("/api/contact", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form),
+                body: JSON.stringify({ ...form, website, startedAt: startedAt.current }),
             });
+            if (res.status === 429) {
+                setStatus("rateLimited");
+                return;
+            }
             if (!res.ok) throw new Error();
             setStatus("success");
             setForm({ name: "", email: "", message: "" });
@@ -57,6 +70,9 @@ export default function Contact() {
                     <h2 className="mt-3 text-3xl sm:text-4xl font-bold text-white">
                         {t.contact.heading}
                     </h2>
+                    <p className="mt-3 text-white/40 text-sm max-w-md mx-auto">
+                        {t.contact.subtitle}
+                    </p>
                 </motion.div>
 
                 <div className="grid lg:grid-cols-5 gap-8 max-w-5xl mx-auto">
@@ -67,7 +83,7 @@ export default function Contact() {
                         whileInView="visible"
                         viewport={{ once: true, margin: "-80px" }}
                         onSubmit={handleSubmit}
-                        className="lg:col-span-3 flex flex-col gap-4"
+                        className="relative lg:col-span-3 flex flex-col gap-4"
                     >
                         <div>
                             <label className="block text-white/50 text-sm mb-1.5" htmlFor="name">
@@ -77,6 +93,8 @@ export default function Contact() {
                                 id="name"
                                 type="text"
                                 required
+                                maxLength={CONTACT_LIMITS.name}
+                                autoComplete="name"
                                 disabled={status === "sending" || status === "success"}
                                 value={form.name}
                                 onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -92,6 +110,8 @@ export default function Contact() {
                                 id="email"
                                 type="email"
                                 required
+                                maxLength={CONTACT_LIMITS.email}
+                                autoComplete="email"
                                 disabled={status === "sending" || status === "success"}
                                 value={form.email}
                                 onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -107,6 +127,7 @@ export default function Contact() {
                                 id="message"
                                 required
                                 rows={6}
+                                maxLength={CONTACT_LIMITS.message}
                                 disabled={status === "sending" || status === "success"}
                                 value={form.message}
                                 onChange={(e) => setForm({ ...form, message: e.target.value })}
@@ -115,17 +136,31 @@ export default function Contact() {
                             />
                         </div>
 
+                        {/* Honeypot */}
+                        <div aria-hidden="true" className="sr-only">
+                            <label htmlFor="website">Website</label>
+                            <input
+                                id="website"
+                                name="website"
+                                type="text"
+                                tabIndex={-1}
+                                autoComplete="off"
+                                value={website}
+                                onChange={(e) => setWebsite(e.target.value)}
+                            />
+                        </div>
+
                         {/* Status feedback */}
                         {status === "success" && (
-                            <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm">
+                            <div role="status" className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm">
                                 <CheckCircle className="w-4 h-4 flex-shrink-0" />
                                 {t.contact.success}
                             </div>
                         )}
-                        {status === "error" && (
-                            <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm">
+                        {(status === "error" || status === "rateLimited") && (
+                            <div role="alert" className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm">
                                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                                {t.contact.error}
+                                {status === "rateLimited" ? t.contact.rateLimited : t.contact.error}
                             </div>
                         )}
 
@@ -142,15 +177,6 @@ export default function Contact() {
                                 )}
                                 {status === "sending" ? t.contact.sending : t.contact.sendButton}
                             </button>
-                            {status === "error" && (
-                                <button
-                                    type="button"
-                                    onClick={() => setStatus("idle")}
-                                    className="text-sm text-white/40 hover:text-white transition-colors"
-                                >
-                                    {t.contact.sendButton}
-                                </button>
-                            )}
                         </div>
                     </motion.form>
 
@@ -168,10 +194,10 @@ export default function Contact() {
                                 <span className="text-white/50 text-xs uppercase tracking-widest">{t.contact.emailLabel}</span>
                             </div>
                             <a
-                                href="mailto:rahman.salama78@gmail.com"
+                                href={`mailto:${SITE.email}`}
                                 className="text-white/80 text-sm hover:text-white transition-colors break-all"
                             >
-                                rahman.salama78@gmail.com
+                                {SITE.email}
                             </a>
                         </div>
 

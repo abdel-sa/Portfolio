@@ -1,13 +1,28 @@
-export interface ShaderConfig {
-  proportion: number;
-  softness: number;
-  distortion: number;
-  swirl: number;
-  swirlIterations: number;
-  shape: "checks" | "stripes" | "edge";
-  shapeScale: number;
-  colors: string[];
-}
+import type { StaticImageData } from "next/image";
+import type { ShaderConfig } from "@/lib/shader";
+import type { Language } from "@/lib/i18n";
+
+import tos1 from "@/assets/screenshots/tos-analyzer-1.png";
+import tos2 from "@/assets/screenshots/tos-analyzer-2.png";
+import tos3 from "@/assets/screenshots/tos-analyzer-3.png";
+import tos4 from "@/assets/screenshots/tos-analyzer-4.png";
+import tos5 from "@/assets/screenshots/tos-analyzer-5.png";
+import trade1 from "@/assets/screenshots/tradesignal-ai-1.png";
+import trade2 from "@/assets/screenshots/tradesignal-ai-2.png";
+import freelance1 from "@/assets/screenshots/freelance-1.png";
+import freelance2 from "@/assets/screenshots/freelance-2.png";
+import freelance3 from "@/assets/screenshots/freelance-3.png";
+import freelance4 from "@/assets/screenshots/freelance-4.png";
+import freelance5 from "@/assets/screenshots/freelance-5.png";
+import freelance6 from "@/assets/screenshots/freelance-6.png";
+import hilfswerk1 from "@/assets/screenshots/freelance-hilfswerk-1.png";
+import hilfswerk2 from "@/assets/screenshots/freelance-hilfswerk-2.png";
+import hilfswerk3 from "@/assets/screenshots/freelance-hilfswerk-3.png";
+import hilfswerk4 from "@/assets/screenshots/freelance-hilfswerk-4.png";
+
+export type { ShaderConfig };
+
+export type ProjectType = "fh" | "personal" | "freelance" | "work";
 
 export interface Project {
   slug: string;
@@ -15,7 +30,7 @@ export interface Project {
   icon: "Star" | "Brain" | "Database" | "Globe" | "TrendingUp" | "Shield";
   description: string;
   tags: string[];
-  type: "FH Projekt" | "Eigenes Projekt" | "Freelance" | "Arbeit" | "FH Project" | "Personal Project" | "Work";
+  type: ProjectType;
   year: string;
   problem: string;
   solution: string;
@@ -23,7 +38,7 @@ export interface Project {
   features: string[];
   shader: ShaderConfig;
   context?: { title: string; text: string };
-  screenshots?: string[];
+  screenshots?: StaticImageData[];
 }
 
 export const PROJECTS: Project[] = [
@@ -41,7 +56,7 @@ export const PROJECTS: Project[] = [
       "OpenAI",
       "Manifest V3",
     ],
-    type: "Eigenes Projekt",
+    type: "personal",
     year: "2026",
     problem:
       "Niemand liest Datenschutzerklärungen oder AGB – sie sind zu lang, zu juristisch und zu zeitaufwändig. Trotzdem stimmen Millionen Menschen täglich blind zu und geben dabei oft weitreichende Rechte preis.",
@@ -76,13 +91,7 @@ export const PROJECTS: Project[] = [
       title: "Warum dieses Projekt?",
       text: "ToS;DR ist der bekannteste Ansatz – aber crowd-sourced, veraltet und deckt nur große Dienste ab. ToS Analyzer schließt diese Lücke: on-demand, DSGVO-bewusst, auf Deutsch, für jeden beliebigen Dienst. Die Beta-Version ist zudem bereits erfolgreich im Chrome Extension Webstore gelauncht worden.",
     },
-    screenshots: [
-      "/Screenshot 2026-05-04 211103.png",
-      "/Screenshot 2026-05-04 211134.png",
-      "/Screenshot 2026-05-04 211147.png",
-      "/Screenshot 2026-05-04 211157.png",
-      "/Screenshot 2026-05-04 211217.png",
-    ],
+    screenshots: [tos1, tos2, tos3, tos4, tos5],
   },
   {
     slug: "tradesignal-ai",
@@ -91,7 +100,7 @@ export const PROJECTS: Project[] = [
     description:
       "Automatischer Trading Bot der Telegram-Signale per KI parsed und Orders in MetaTrader 5 ausführt.",
     tags: ["Python", "Groq API", "LLaMA", "MetaTrader 5", "Telethon"],
-    type: "Eigenes Projekt",
+    type: "personal",
     year: "2026",
     problem:
       "Trading-Signale aus Telegram-Kanälen manuell zu kopieren und in MetaTrader 5 einzugeben ist fehleranfällig, zeitintensiv und unmöglich bei mehreren Kanälen gleichzeitig zu skalieren.",
@@ -119,24 +128,25 @@ export const PROJECTS: Project[] = [
         "hsl(40, 100%, 68%)",
       ],
     },
-    screenshots: ["/tradebot-screenshot-1.png", "/tradebot-screenshot-2.png"],
+    screenshots: [trade1, trade2],
   },
   {
     slug: "freelance",
     title: "Freelance Web Development",
     icon: "Globe" as const,
     description:
-      "3 Kundenprojekte eigenständig von Konzeption bis Deployment umgesetzt.",
-    tags: ["HTML", "CSS", "JavaScript"],
-    type: "Freelance",
+      "4 Kundenprojekte eigenständig von Konzeption bis Deployment umgesetzt.",
+    tags: ["Angular", "React", "Next.js", "TypeScript", "Tailwind CSS"],
+    type: "freelance",
     year: "2025 - laufend",
     problem:
       "Kleine Unternehmen und Selbstständige benötigten professionelle Web-Präsenzen, hatten aber kein Budget für Agenturen und keine technischen Kenntnisse zur Eigenumsetzung.",
     solution:
-      "3 vollständige Website-Projekte von der ersten Konzeptbesprechung bis zum Live-Deployment – inkl. Design, Entwicklung, Hosting-Setup und Kundeneinweisung. Alle Projekte wurden termingerecht und im Budget geliefert.",
+      "4 vollständige Website-Projekte von der ersten Konzeptbesprechung bis zum Live-Deployment – inkl. Design, Entwicklung, Hosting-Setup und Kundeneinweisung. Alle Projekte wurden termingerecht und im Budget geliefert.",
     features: [
       "Kundenberatung und Anforderungsanalyse",
       "Responsive Design für alle Gerätegrößen",
+      "Mehrsprachige Websites inkl. Arabisch (Rechts-nach-links-Layout)",
       "Performance-optimierter, barrierefreier Code",
       "Hosting-Setup und Domain-Konfiguration",
       "Kundeneinweisung und Dokumentation",
@@ -157,12 +167,16 @@ export const PROJECTS: Project[] = [
       ],
     },
     screenshots: [
-      "/freelance-final-1.png",
-      "/freelance-final-2.png",
-      "/freelance-final-3.png",
-      "/freelance-final-4.png",
-      "/freelance-final-5.png",
-      "/freelance-final-6.png",
+      hilfswerk1,
+      hilfswerk2,
+      hilfswerk3,
+      hilfswerk4,
+      freelance1,
+      freelance2,
+      freelance3,
+      freelance4,
+      freelance5,
+      freelance6,
     ],
   },
   {
@@ -172,7 +186,7 @@ export const PROJECTS: Project[] = [
     description:
       "RESTful HTTP Server mit Token-Auth, Rating-System und Content-Recommendations.",
     tags: ["C#", ".NET 8", "PostgreSQL", "Docker"],
-    type: "FH Projekt",
+    type: "fh",
     year: "2025",
     problem:
       "Es fehlte eine einheitliche Plattform, auf der Nutzer Medieninhalte bewerten und personalisierte Empfehlungen erhalten können – mit sicherer Authentifizierung und skalierbarer Architektur.",
@@ -208,7 +222,7 @@ export const PROJECTS: Project[] = [
     description:
       "KI-Pipeline zur automatischen Erstellung von Moodle-Kursen mit mehreren LLMs.",
     tags: ["Python", "Claude API", "ChatGPT", "PHP"],
-    type: "FH Projekt",
+    type: "fh",
     year: "2025",
     problem:
       "Die manuelle Erstellung strukturierter Moodle-Kurse ist zeitaufwendig und erfordert pädagogisches Know-how. Lehrende brauchen ein Werkzeug, das diesen Prozess automatisiert und gleichzeitig qualitativ hochwertige Inhalte erzeugt.",
@@ -244,7 +258,7 @@ export const PROJECTS: Project[] = [
     description:
       "Salesforce Administrator – Mitarbeit an einem CRM-Projekt für ein Autohaus.",
     tags: ["Salesforce", "Scrum", "Jira", "Confluence"],
-    type: "Arbeit",
+    type: "work",
     year: "2025",
     problem:
       "Das Autohaus benötigte ein strukturiertes CRM-System zur Verwaltung von Leads und Kaufverträgen.",
@@ -275,10 +289,11 @@ export const PROJECTS: Project[] = [
   },
 ];
 
-export const PROJECTS_EN_TRANSLATIONS: Record<string, Partial<Project>> = {
+type TranslatableProjectFields = Pick<Project, "description" | "problem" | "solution" | "solutionLabel" | "features" | "context">;
+
+export const PROJECTS_EN_TRANSLATIONS: Record<string, Partial<TranslatableProjectFields>> = {
   "tos-analyzer": {
     description: "AI-powered browser extension that automatically analyzes and scores privacy policies and terms of service.",
-    type: "Personal Project",
     problem: "No one reads privacy policies or terms of service – they are too long, too legal, and too time-consuming. Yet millions of people blindly agree every day, often giving away far-reaching rights.",
     solution: "A browser extension that extracts the text of the current page at the push of a button, analyzes it via a flexible API connection (Groq, Claude or OpenAI) and returns it structured – with a traffic light score (A-E), categorized warnings, and inline highlighting of critical clauses directly in the original text.",
     features: [
@@ -298,7 +313,6 @@ export const PROJECTS_EN_TRANSLATIONS: Record<string, Partial<Project>> = {
   },
   "tradesignal-ai": {
     description: "Automatic trading bot that parses Telegram signals via AI and executes orders in MetaTrader 5.",
-    type: "Personal Project",
     problem: "Manually copying trading signals from Telegram channels and entering them into MetaTrader 5 is error-prone, time-consuming, and impossible to scale across multiple channels simultaneously.",
     solution: "A Python bot that receives Telegram messages in real-time via Telethon, parses and structures them with LLaMA (via Groq API), and then fully automatically places orders with correct SL/TP in MetaTrader 5.",
     features: [
@@ -310,13 +324,13 @@ export const PROJECTS_EN_TRANSLATIONS: Record<string, Partial<Project>> = {
     ],
   },
   "freelance": {
-    description: "3 client projects implemented independently from conception to deployment.",
-    type: "Freelance",
+    description: "4 client projects implemented independently from conception to deployment.",
     problem: "Small businesses and freelancers needed professional web presences but had no budget for agencies and no technical knowledge to implement them themselves.",
-    solution: "3 complete website projects from the initial concept meeting to live deployment - incl. design, development, hosting setup, and client briefing. All projects were delivered on time and within budget.",
+    solution: "4 complete website projects from the initial concept meeting to live deployment - incl. design, development, hosting setup, and client briefing. All projects were delivered on time and within budget.",
     features: [
       "Client consultation and requirements analysis",
       "Responsive design for all screen sizes",
+      "Multilingual websites incl. Arabic (right-to-left layout)",
       "Performance-optimized, accessible code",
       "Hosting setup and domain configuration",
       "Client briefing and documentation",
@@ -324,7 +338,6 @@ export const PROJECTS_EN_TRANSLATIONS: Record<string, Partial<Project>> = {
   },
   "mrp": {
     description: "RESTful HTTP Server with token auth, rating system, and content recommendations.",
-    type: "FH Project",
     problem: "There was no unified platform where users could rate media content and receive personalized recommendations - with secure authentication and scalable architecture.",
     solution: "A RESTful HTTP Server in C#/.NET 8 with token-based authentication, a full rating system, and a recommendations module based on user preferences. Persistence via PostgreSQL, deployment in Docker.",
     features: [
@@ -337,7 +350,6 @@ export const PROJECTS_EN_TRANSLATIONS: Record<string, Partial<Project>> = {
   },
   "moodle-pipeline": {
     description: "AI pipeline for the automatic creation of Moodle courses with multiple LLMs.",
-    type: "FH Project",
     problem: "The manual creation of structured Moodle courses is time-consuming and requires pedagogical know-how. Teachers need a tool that automates this process while generating high-quality content.",
     solution: "A multi-stage AI pipeline in Python that processes input material (PDFs, texts), generates course structures and content with Claude and ChatGPT, and imports them directly into Moodle via a PHP script.",
     features: [
@@ -350,7 +362,6 @@ export const PROJECTS_EN_TRANSLATIONS: Record<string, Partial<Project>> = {
   },
   "salesforce-crm": {
     description: "Salesforce Administrator - participation in a CRM project for a car dealership.",
-    type: "Work",
     problem: "The car dealership needed a structured CRM system to manage leads and sales contracts.",
     solution: "Contributed to the development of Screen Flows, management of user permissions in the sandbox, and agile collaboration in the Scrum team.",
     solutionLabel: "My Role",
@@ -363,20 +374,16 @@ export const PROJECTS_EN_TRANSLATIONS: Record<string, Partial<Project>> = {
   },
 };
 
-export function getProjects(lang: string = "de"): Project[] {
+export function getProjects(lang: Language = "de"): Project[] {
   if (lang === "de") return PROJECTS;
-  return PROJECTS.map(p => ({
-    ...p,
-    ...PROJECTS_EN_TRANSLATIONS[p.slug],
-    type: (PROJECTS_EN_TRANSLATIONS[p.slug]?.type as any) || p.type,
-  }));
+  return PROJECTS.map((p) => ({ ...p, ...PROJECTS_EN_TRANSLATIONS[p.slug] }));
 }
 
-export function getProject(slug: string, lang: string = "de"): Project | undefined {
+export function getProject(slug: string, lang: Language = "de"): Project | undefined {
   return getProjects(lang).find((p) => p.slug === slug);
 }
 
-export function getAdjacentProject(slug: string, lang: string = "de"): Project | undefined {
+export function getAdjacentProject(slug: string, lang: Language = "de"): Project | undefined {
   const projects = getProjects(lang);
   const idx = projects.findIndex((p) => p.slug === slug);
   if (idx === -1) return undefined;

@@ -1,18 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Warp } from "@paper-design/shaders-react";
+import { ShaderBackground } from "@/components/ui/shader-background";
 import Link from "next/link";
-import { ArrowRight, ShieldCheck, Award } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { CERTIFICATE_ICONS } from "@/components/content-icons";
 import { getCertificates } from "@/lib/certificates";
-import type { Certificate } from "@/lib/certificates";
 import { useLanguage } from "@/components/LanguageProvider";
-
-const ICON_MAP: Record<Certificate["icon"], LucideIcon> = {
-  ShieldCheck,
-  Award,
-};
 
 const cardVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -54,7 +48,7 @@ export default function Certificates() {
         {/* Cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {certificates.map((certificate, index) => {
-            const Icon = ICON_MAP[certificate.icon];
+            const Icon = CERTIFICATE_ICONS[certificate.icon];
             const { shader } = certificate;
             return (
               <motion.div
@@ -66,23 +60,13 @@ export default function Certificates() {
                 viewport={{ once: true, margin: "-60px" }}
                 className="relative h-80 group"
               >
-                {/* Shader background */}
-                <div className="absolute inset-0 rounded-3xl overflow-hidden">
-                  <Warp
-                    style={{ height: "100%", width: "100%" }}
-                    proportion={shader.proportion}
-                    softness={shader.softness}
-                    distortion={shader.distortion}
-                    swirl={shader.swirl}
-                    swirlIterations={shader.swirlIterations}
-                    shape={shader.shape}
-                    shapeScale={shader.shapeScale}
-                    scale={1}
-                    rotation={0}
-                    speed={0.6}
-                    colors={shader.colors}
-                  />
-                </div>
+                {/* Shader background (pausiert außerhalb des Viewports) */}
+                <ShaderBackground
+                  shader={shader}
+                  speed={0.6}
+                  maxPixelCount={500_000}
+                  className="absolute inset-0 rounded-3xl overflow-hidden"
+                />
 
                 {/* Card overlay */}
                 <div className="relative z-10 h-full flex flex-col p-7 rounded-3xl bg-black/75 border border-white/10 group-hover:bg-black/65 transition-colors duration-300">

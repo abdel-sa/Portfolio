@@ -1,7 +1,25 @@
 export type Language = "de" | "en";
 
+export const LANGUAGE_COOKIE = "portfolio-language";
+
 export const translations = {
   de: {
+    meta: {
+      title: "Abdelrahman Salama – Software Developer",
+      description:
+        "Portfolio von Abdelrahman Salama – Informatik-Student, Salesforce Administrator & Freelance Web Developer.",
+    },
+    a11y: {
+      downloadCV: "Lebenslauf herunterladen",
+      openMenu: "Menü öffnen",
+      closeMenu: "Menü schließen",
+      switchLanguage: "Auf Englisch wechseln",
+      backToTop: "Zum Seitenanfang",
+      close: "Schließen",
+      enlargeScreenshot: "Screenshot vergrößern",
+      previous: "Zurück",
+      next: "Weiter",
+    },
     nav: {
       home: "Home",
       about: "Über mich",
@@ -32,6 +50,7 @@ export const translations = {
         "Von der Matura an der BRG 16 zum Informatik-Studium an der FH Technikum Wien. Praktische Erfahrung als Salesforce Administrator und Freelance Web Developer – ich baue Lösungen, die echten Mehrwert liefern.",
       focusTitle: "Aktueller Fokus",
       focusDesc: "KI-Integration, Cloud/DevOps, Cybersecurity und Software Development.",
+      focusTags: ["Salesforce", "KI / LLMs", "Cloud & DevOps", "Cybersecurity", "Software Development"],
       projects: "Projekte",
       semester: "Semester",
       technologies: "Technologien",
@@ -71,6 +90,12 @@ export const translations = {
       subtitle: "Ausgewählte Projekte aus Studium und Praxis.",
       learnMore: "Mehr erfahren",
     },
+    projectTypes: {
+      fh: "FH Projekt",
+      personal: "Eigenes Projekt",
+      freelance: "Freelance",
+      work: "Arbeit",
+    },
     projectDetail: {
       back: "Zurück",
       problem: "Das Problem",
@@ -108,7 +133,8 @@ export const translations = {
       sendButton: "Nachricht senden",
       sending: "Senden...",
       success: "Nachricht gesendet! Ich melde mich bald.",
-      error: "Ein Fehler ist aufgetreten.",
+      error: "Ein Fehler ist aufgetreten. Bitte erneut versuchen.",
+      rateLimited: "Zu viele Nachrichten in kurzer Zeit. Bitte später erneut versuchen.",
       locationLabel: "Standort",
       location: "Wien, Österreich",
       availabilityLabel: "Verfügbarkeit",
@@ -123,6 +149,22 @@ export const translations = {
     },
   },
   en: {
+    meta: {
+      title: "Abdelrahman Salama – Software Developer",
+      description:
+        "Portfolio of Abdelrahman Salama – Computer Science student, Salesforce Administrator & Freelance Web Developer.",
+    },
+    a11y: {
+      downloadCV: "Download CV",
+      openMenu: "Open menu",
+      closeMenu: "Close menu",
+      switchLanguage: "Switch to German",
+      backToTop: "Back to top",
+      close: "Close",
+      enlargeScreenshot: "Enlarge screenshot",
+      previous: "Previous",
+      next: "Next",
+    },
     nav: {
       home: "Home",
       about: "About",
@@ -153,6 +195,7 @@ export const translations = {
         "From high school to studying Computer Science at FH Technikum Wien. Practical experience as a Salesforce Administrator and Freelance Web Developer – I build solutions that deliver real value.",
       focusTitle: "Current Focus",
       focusDesc: "AI Integration, Cloud/DevOps, Cybersecurity, and Software Development.",
+      focusTags: ["Salesforce", "AI / LLMs", "Cloud & DevOps", "Cybersecurity", "Software Development"],
       projects: "Projects",
       semester: "Semester",
       technologies: "Technologies",
@@ -192,6 +235,12 @@ export const translations = {
       subtitle: "Selected academic and practical projects.",
       learnMore: "Learn more",
     },
+    projectTypes: {
+      fh: "FH Project",
+      personal: "Personal Project",
+      freelance: "Freelance",
+      work: "Work",
+    },
     projectDetail: {
       back: "Back",
       problem: "The Problem",
@@ -229,7 +278,8 @@ export const translations = {
       sendButton: "Send Message",
       sending: "Sending...",
       success: "Message sent! I'll be in touch soon.",
-      error: "An error occurred.",
+      error: "Something went wrong. Please try again.",
+      rateLimited: "Too many messages in a short time. Please try again later.",
       locationLabel: "Location",
       location: "Vienna, Austria",
       availabilityLabel: "Availability",

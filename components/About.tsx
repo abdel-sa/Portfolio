@@ -11,16 +11,9 @@ import {
 import { BentoGrid } from "@/components/ui/bento-grid";
 import type { BentoItem } from "@/components/ui/bento-grid";
 import { useLanguage } from "@/components/LanguageProvider";
+import { PROJECTS } from "@/lib/projects";
 
-const INTEREST_TAGS = [
-    "Salesforce",
-    "KI / LLMs",
-    "Cloud & DevOps",
-    "Cybersecurity",
-    "Software Development",
-];
-
-export default function About() {
+export default function About({ semester }: { semester: number }) {
     const { t } = useLanguage();
 
     const ITEMS: BentoItem[] = [
@@ -35,19 +28,19 @@ export default function About() {
             title: t.about.focusTitle,
             description: t.about.focusDesc,
             icon: <Target className="w-4 h-4 text-violet-400" />,
-            tags: INTEREST_TAGS,
+            tags: t.about.focusTags,
         },
         {
             title: t.about.projects,
             description: "",
             icon: <FolderOpen className="w-4 h-4 text-indigo-400" />,
-            stat: "9",
+            stat: String(PROJECTS.length),
         },
         {
             title: t.about.semester,
             description: "",
             icon: <GraduationCap className="w-4 h-4 text-violet-400" />,
-            stat: "4.",
+            stat: `${semester}.`,
         },
         {
             title: t.about.technologies,

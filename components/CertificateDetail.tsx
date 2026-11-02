@@ -2,17 +2,12 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Check, FileText, ShieldCheck, Award } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-import { Warp } from "@paper-design/shaders-react";
+import { ArrowLeft, ArrowRight, Check, FileText } from "lucide-react";
+import { ShaderBackground } from "@/components/ui/shader-background";
+import { CERTIFICATE_ICONS } from "@/components/content-icons";
 import { getCertificate, getAdjacentCertificate } from "@/lib/certificates";
 import type { Certificate } from "@/lib/certificates";
 import { useLanguage } from "@/components/LanguageProvider";
-
-const ICON_MAP: Record<Certificate["icon"], LucideIcon> = {
-  ShieldCheck,
-  Award,
-};
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -32,7 +27,7 @@ export default function CertificateDetail({
   const nextCertificate = initialNextCertificate
     ? getAdjacentCertificate(initialCertificate.slug, language)
     : undefined;
-  const Icon = ICON_MAP[certificate.icon];
+  const Icon = CERTIFICATE_ICONS[certificate.icon];
   const { shader } = certificate;
 
   return (
@@ -51,22 +46,7 @@ export default function CertificateDetail({
 
         {/* Hero */}
         <motion.div {...fadeUp(0.05)} className="relative h-64 sm:h-80 md:h-96 rounded-3xl overflow-hidden mb-10">
-          <div className="absolute inset-0">
-            <Warp
-              style={{ height: "100%", width: "100%" }}
-              proportion={shader.proportion}
-              softness={shader.softness}
-              distortion={shader.distortion}
-              swirl={shader.swirl}
-              swirlIterations={shader.swirlIterations}
-              shape={shader.shape}
-              shapeScale={shader.shapeScale}
-              scale={1}
-              rotation={0}
-              speed={0.5}
-              colors={shader.colors}
-            />
-          </div>
+          <ShaderBackground shader={shader} speed={0.5} className="absolute inset-0" />
           <div className="absolute inset-0 flex items-center justify-center bg-black/30">
             <Icon className="w-20 h-20 text-white drop-shadow-lg" />
           </div>

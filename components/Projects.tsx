@@ -1,22 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Warp } from "@paper-design/shaders-react";
+import { ShaderBackground } from "@/components/ui/shader-background";
 import Link from "next/link";
-import { ArrowRight, Star, Brain, Database, Globe, TrendingUp, Shield } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { PROJECT_ICONS } from "@/components/content-icons";
 import { getProjects } from "@/lib/projects";
-import type { Project } from "@/lib/projects";
 import { useLanguage } from "@/components/LanguageProvider";
-
-const ICON_MAP: Record<Project["icon"], LucideIcon> = {
-  Star,
-  Brain,
-  Database,
-  Globe,
-  TrendingUp,
-  Shield,
-};
 
 const cardVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -58,7 +48,7 @@ export default function Projects() {
         {/* Cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project, index) => {
-            const Icon = ICON_MAP[project.icon];
+            const Icon = PROJECT_ICONS[project.icon];
             const { shader } = project;
             return (
               <motion.div
@@ -70,23 +60,13 @@ export default function Projects() {
                 viewport={{ once: true, margin: "-60px" }}
                 className="relative h-80 group"
               >
-                {/* Shader background */}
-                <div className="absolute inset-0 rounded-3xl overflow-hidden">
-                  <Warp
-                    style={{ height: "100%", width: "100%" }}
-                    proportion={shader.proportion}
-                    softness={shader.softness}
-                    distortion={shader.distortion}
-                    swirl={shader.swirl}
-                    swirlIterations={shader.swirlIterations}
-                    shape={shader.shape}
-                    shapeScale={shader.shapeScale}
-                    scale={1}
-                    rotation={0}
-                    speed={0.6}
-                    colors={shader.colors}
-                  />
-                </div>
+                {/* Shader background (pausiert außerhalb des Viewports) */}
+                <ShaderBackground
+                  shader={shader}
+                  speed={0.6}
+                  maxPixelCount={500_000}
+                  className="absolute inset-0 rounded-3xl overflow-hidden"
+                />
 
                 {/* Card overlay */}
                 <div className="relative z-10 h-full flex flex-col p-7 rounded-3xl bg-black/75 border border-white/10 group-hover:bg-black/65 transition-colors duration-300">
@@ -94,7 +74,7 @@ export default function Projects() {
                   <div className="flex justify-between items-start mb-5">
                     <Icon className="w-10 h-10 text-white drop-shadow-lg" />
                     <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide bg-white/10 border border-white/20 text-white/80 uppercase">
-                      {project.type}
+                      {t.projectTypes[project.type]}
                     </span>
                   </div>
 

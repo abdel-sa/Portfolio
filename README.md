@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio – Abdelrahman Salama
 
-## Getting Started
+Meine persönliche Portfolio-Website: Projekte, Skills, Zertifikate und Kontaktformular, auf Deutsch und Englisch.
 
-First, run the development server:
+## Tech Stack
+
+- [Next.js 16](https://nextjs.org) (App Router) + React 19 + TypeScript
+- Tailwind CSS 4
+- Framer Motion für Animationen
+- [@paper-design/shaders-react](https://github.com/paper-design/shaders) für die animierten Hintergründe
+- [Resend](https://resend.com) für den Versand des Kontaktformulars
+
+## Lokal starten
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Danach läuft die Seite auf [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Umgebungsvariablen
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Für das Kontaktformular wird eine `.env.local` gebraucht:
 
-## Learn More
+```bash
+RESEND_API_KEY=re_...
+```
 
-To learn more about Next.js, take a look at the following resources:
+Ohne Key funktioniert alles außer dem Versenden von Nachrichten.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Befehl          | Beschreibung              |
+| --------------- | ------------------------- |
+| `npm run dev`   | Entwicklungsserver        |
+| `npm run build` | Produktions-Build         |
+| `npm run start` | Produktions-Build starten |
+| `npm run lint`  | ESLint                    |
 
-## Deploy on Vercel
+## Struktur
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+app/                  Seiten und API-Route (/api/contact)
+components/           Abschnitte der Startseite und Detailseiten
+components/ui/        Wiederverwendbare UI-Bausteine
+lib/site.ts           Zentrale Daten: Name, E-Mail, Social Links, Navigation
+lib/i18n.ts           Übersetzungen (DE/EN)
+lib/projects.ts       Projekte inkl. englischer Übersetzung
+lib/certificates.ts   Zertifikate inkl. englischer Übersetzung
+assets/screenshots/   Projekt-Screenshots (werden über next/image optimiert)
+public/               CV und Zertifikats-PDFs
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Inhalte pflegen
+
+- **Neues Projekt:** Eintrag in `PROJECTS` in `lib/projects.ts` anlegen, englische Texte in `PROJECTS_EN_TRANSLATIONS` ergänzen. Screenshots nach `assets/screenshots/` legen und oben in der Datei importieren.
+- **Neues Zertifikat:** Eintrag in `lib/certificates.ts`, PDF nach `public/certificates/`.
+- **Lebenslauf:** `public/cv.pdf` ersetzen.
+
+Die Sprache wird in einem Cookie gespeichert, damit die Seite direkt vom Server in der richtigen Sprache ausgeliefert wird.

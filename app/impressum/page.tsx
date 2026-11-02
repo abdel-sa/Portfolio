@@ -1,73 +1,114 @@
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
+import { LegalPage, LEGAL_LINK, type LegalSection } from "@/components/LegalPage";
+import { getLanguage } from "@/lib/i18n-server";
+import { SITE } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Impressum – Abdelrahman Salama",
+export async function generateMetadata(): Promise<Metadata> {
+  const language = await getLanguage();
+  return { title: `${language === "en" ? "Legal Notice" : "Impressum"} – ${SITE.name}` };
+}
+
+const emailLink = (
+  <a href={`mailto:${SITE.email}`} className={LEGAL_LINK}>
+    {SITE.email}
+  </a>
+);
+
+const CONTENT: Record<"de" | "en", { back: string; title: string; note?: string; sections: LegalSection[] }> = {
+  de: {
+    back: "Zurück",
+    title: "Impressum",
+    sections: [
+      {
+        heading: "Angaben gemäß § 5 ECG",
+        content: (
+          <>
+            <p>{SITE.name}</p>
+            <p>Wien, Österreich</p>
+          </>
+        ),
+      },
+      { heading: "Kontakt", content: <p>E-Mail: {emailLink}</p> },
+      {
+        heading: "Zweck der Website",
+        content: (
+          <p>
+            Diese Website dient ausschließlich der persönlichen Präsentation (Portfolio) und
+            wird nicht zu gewerblichen Zwecken betrieben.
+          </p>
+        ),
+      },
+      {
+        heading: "Haftungsausschluss",
+        content: (
+          <p>
+            Trotz sorgfältiger inhaltlicher Kontrolle übernehme ich keine Haftung für die
+            Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschließlich
+            deren Betreiber verantwortlich.
+          </p>
+        ),
+      },
+      {
+        heading: "Urheberrecht",
+        content: (
+          <p>
+            Die durch den Seitenbetreiber erstellten Inhalte und Werke auf dieser Website
+            unterliegen dem österreichischen Urheberrecht. Die Vervielfältigung, Bearbeitung,
+            Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts
+            bedürfen der schriftlichen Zustimmung des Autors.
+          </p>
+        ),
+      },
+    ],
+  },
+  en: {
+    back: "Back",
+    title: "Legal Notice",
+    note: "This is a translation for convenience. Only the German version is legally binding.",
+    sections: [
+      {
+        heading: "Information pursuant to § 5 ECG (Austrian E-Commerce Act)",
+        content: (
+          <>
+            <p>{SITE.name}</p>
+            <p>Vienna, Austria</p>
+          </>
+        ),
+      },
+      { heading: "Contact", content: <p>Email: {emailLink}</p> },
+      {
+        heading: "Purpose of this website",
+        content: (
+          <p>
+            This website serves exclusively as a personal presentation (portfolio) and is not
+            operated for commercial purposes.
+          </p>
+        ),
+      },
+      {
+        heading: "Disclaimer",
+        content: (
+          <p>
+            Despite careful review, I accept no liability for the content of external links.
+            The operators of linked pages are solely responsible for their content.
+          </p>
+        ),
+      },
+      {
+        heading: "Copyright",
+        content: (
+          <p>
+            The content and works created by the site operator are subject to Austrian
+            copyright law. Any reproduction, editing, distribution or other use beyond the
+            limits of copyright law requires the author&apos;s written consent.
+          </p>
+        ),
+      },
+    ],
+  },
 };
 
-export default function Impressum() {
-  return (
-    <main className="min-h-screen bg-[#030303] px-4 md:px-6 py-16">
-      <div className="max-w-2xl mx-auto">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-white/40 hover:text-white transition-colors mb-10"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Zurück
-        </Link>
-
-        <h1 className="text-3xl font-bold text-white mb-8">Impressum</h1>
-
-        <div className="space-y-8 text-white/60 text-sm leading-relaxed">
-          <section>
-            <h2 className="text-white font-semibold text-base mb-3">Angaben gemäß § 5 ECG</h2>
-            <p>Abdelrahman Salama</p>
-            <p>Wien, Österreich</p>
-          </section>
-
-          <section>
-            <h2 className="text-white font-semibold text-base mb-3">Kontakt</h2>
-            <p>
-              E-Mail:{" "}
-              <a
-                href="mailto:rahman.salama78@gmail.com"
-                className="text-indigo-400 hover:text-indigo-300 transition-colors"
-              >
-                rahman.salama78@gmail.com
-              </a>
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-white font-semibold text-base mb-3">Zweck der Website</h2>
-            <p>
-              Diese Website dient ausschließlich der persönlichen Präsentation (Portfolio) und
-              wird nicht zu gewerblichen Zwecken betrieben.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-white font-semibold text-base mb-3">Haftungsausschluss</h2>
-            <p>
-              Trotz sorgfältiger inhaltlicher Kontrolle übernehme ich keine Haftung für die
-              Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschließlich
-              deren Betreiber verantwortlich.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-white font-semibold text-base mb-3">Urheberrecht</h2>
-            <p>
-              Die durch den Seitenbetreiber erstellten Inhalte und Werke auf dieser Website
-              unterliegen dem österreichischen Urheberrecht. Die Vervielfältigung, Bearbeitung,
-              Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts
-              bedürfen der schriftlichen Zustimmung des Autors.
-            </p>
-          </section>
-        </div>
-      </div>
-    </main>
-  );
+export default async function Impressum() {
+  const c = CONTENT[await getLanguage()];
+  return <LegalPage backLabel={c.back} title={c.title} note={c.note} sections={c.sections} />;
 }
