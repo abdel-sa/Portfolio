@@ -1,15 +1,16 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { getProject, getAdjacentProject } from "@/lib/projects";
 import type { Project, ProjectType } from "@/lib/projects";
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/components/LanguageProvider";
 import { Button } from "@/components/ui/button";
 import { ShaderBackground } from "@/components/ui/shader-background";
+import { Lightbox } from "@/components/ui/lightbox";
 import {
   Carousel,
   CarouselApi,
@@ -52,15 +53,12 @@ export default function ProjectDetail({
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const selectedImage = selectedIndex !== null ? screenshots[selectedIndex] : undefined;
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedIndex(null);
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  const closeLightbox = () => {
+    // Carousel auf das zuletzt angesehene Bild setzen
+    if (selectedIndex !== null) carouselApi?.scrollTo(selectedIndex);
+    setSelectedIndex(null);
+  };
 
   useEffect(() => {
     if (!carouselApi) return;
@@ -259,46 +257,14 @@ export default function ProjectDetail({
         )}
       </div>
 
-      <AnimatePresence>
-        {selectedImage && selectedIndex !== null && (
-          <motion.div
-            role="dialog"
-            aria-modal="true"
-            aria-label={screenshotAlt(selectedIndex)}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={() => setSelectedIndex(null)}
-            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm cursor-zoom-out"
-          >
-            <button
-              onClick={() => setSelectedIndex(null)}
-              aria-label={t.a11y.close}
-              autoFocus
-              className="absolute top-6 right-6 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            <motion.div
-              initial={{ scale: 0.95 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.95 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              onClick={(e) => e.stopPropagation()}
-              className="cursor-default"
-            >
-              <Image
-                src={selectedImage}
-                alt={screenshotAlt(selectedIndex)}
-                sizes="95vw"
-                placeholder="blur"
-                className="max-h-[90vh] max-w-[95vw] w-auto h-auto object-contain rounded-xl shadow-2xl"
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <Lightbox
+        images={screenshots}
+        index={selectedIndex}
+        onIndexChange={setSelectedIndex}
+        onClose={closeLightbox}
+        altFor={screenshotAlt}
+        labels={{ close: t.a11y.close, previous: t.a11y.previous, next: t.a11y.next }}
+      />
     </main>
   );
 }
